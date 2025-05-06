@@ -1,0 +1,20 @@
+# Python cache and environment
+__pycache__/
+venv/
+.env
+.DS_Store
+
+# Logs and data
+*.log
+llm_interactions.jsonl
+feedback_queue.jsonl
+reviewed_feedback.jsonl
+
+# Streamlit and build artifacts
+.streamlit/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
