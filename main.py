@@ -1,16 +1,12 @@
+import streamlit as st
 from router import LLMRouter
-import os
-from dotenv import load_dotenv
 import openai
 
 def main():
-    # Load environment variables from .env file
-    load_dotenv()
-    
-    # Get API key from environment variable
-    api_key = os.getenv("OPENAI_API_KEY")
+    # Get API key from Streamlit secrets
+    api_key = st.secrets["OPENAI_API_KEY"]
     if not api_key:
-        raise ValueError("OPENAI_API_KEY not found in environment variables. Please set it in .env file or environment.")
+        raise ValueError("OPENAI_API_KEY not found in Streamlit secrets. Please set it in secrets.toml or Streamlit Cloud.")
     
     # Initialize the router with the API key
     router = LLMRouter(api_key=api_key)

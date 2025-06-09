@@ -1,11 +1,19 @@
 import json
 import datetime
 from typing import Dict, Any, Optional
-from config import LOG_FILE
+# from config import LOG_FILE  # No longer needed
+import firebase_admin
+from firebase_admin import credentials, firestore
+import os
+import streamlit as st
 
 class LLMLogger:
-    def __init__(self, log_file: str = LOG_FILE):
-        self.log_file = log_file
+    def __init__(self):
+        # Initialize Firestore only once
+        if not firebase_admin._apps:
+            cred = credentials.Certificate(st.secrets["FIREBASE"])
+            firebase_admin.initialize_app(cred)
+        self.db = firestore.client()
 
     def log_interaction(
         self,
@@ -18,7 +26,7 @@ class LLMLogger:
         metadata: Optional[Dict[str, Any]] = None
     ) -> None:
         """
-        Log an LLM interaction to the JSONL file.
+        Log an LLM interaction to Firestore.
         """
         log_entry = {
             "timestamp": datetime.datetime.now().isoformat(),
@@ -30,19 +38,14 @@ class LLMLogger:
             "error": error,
             "metadata": metadata or {}
         }
-
-        with open(self.log_file, "a", encoding="utf-8") as f:
-            f.write(json.dumps(log_entry) + "\n")
+        self.db.collection('logs').add(log_entry)
 
     def get_recent_logs(self, limit: int = 10) -> list:
         """
-        Retrieve the most recent logs from the JSONL file.
+        Retrieve the most recent logs from Firestore.
         """
         logs = []
-        try:
-            with open(self.log_file, "r", encoding="utf-8") as f:
-                for line in f.readlines()[-limit:]:
-                    logs.append(json.loads(line.strip()))
-        except FileNotFoundError:
-            pass
+        docs = self.db.collection('logs').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(limit).stream()
+        for doc in docs:
+            logs.append(doc.to_dict())
         return logs 
