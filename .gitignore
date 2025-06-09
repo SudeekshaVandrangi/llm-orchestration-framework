@@ -5,10 +5,10 @@ venv/
 .DS_Store
 
 # Logs and data
-*.log
-llm_interactions.jsonl
-feedback_queue.jsonl
-reviewed_feedback.jsonl
+#*.log
+#llm_interactions.jsonl
+#feedback_queue.jsonl
+#reviewed_feedback.jsonl
 
 # Streamlit and build artifacts
 .streamlit/

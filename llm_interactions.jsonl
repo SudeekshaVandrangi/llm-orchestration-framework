@@ -1,0 +1,2 @@
+{"timestamp": "2024-06-01T12:00:00", "event": "LLM call", "input": "Hello", "output": "Hi there!"}
+{"timestamp": "2024-06-01T12:01:00", "event": "Feedback", "input": "Hello", "feedback": "Good response"}
